@@ -216,3 +216,23 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# Ignore data split folders
+data/
+submissions/
+
+# Ignore python cache
+__pycache__/
+*.pyc
+
+# Ignore jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Ignore virtual environments
+venv/
+.venv/
+
+# Ignore saved model weights (if any)
+*.pkl
+*.pth
+*.joblib
+
