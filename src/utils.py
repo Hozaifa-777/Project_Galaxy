@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def show_count_plots(df,col,draw_pie_chart = True):
+def show_count_plots(df,col,draw_pie_chart = True,save_path:str=None):
     counts = df[col].value_counts()
 
     fig, ax = plt.subplots(1, 2, figsize=(14, 6))
@@ -13,6 +13,9 @@ def show_count_plots(df,col,draw_pie_chart = True):
     if draw_pie_chart:
         ax[1].pie(counts.values, labels=counts.index, autopct='%1.1f%%')
         ax[1].set_title('Pie Chart Class Distribution')
+
+    if save_path:
+        plt.savefig(save_path, dpi=300)
 
     plt.tight_layout()
     plt.show()
