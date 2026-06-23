@@ -19,7 +19,7 @@ def show_count_plots(df,col,draw_pie_chart = True):
 
 def show_corr(df,save_path:str=None):
     plt.figure(figsize=(15, 12))
-    sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+    sns.heatmap(df.corr(), annot=True, cmap='coolwarm', vmin=-1, vmax=1)
 
     plt.title('Correlation Matrix')
     plt.tight_layout()
