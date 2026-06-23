@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 def show_count_plots(df,col,draw_pie_chart = True):
     counts = df[col].value_counts()
@@ -14,4 +15,14 @@ def show_count_plots(df,col,draw_pie_chart = True):
         ax[1].set_title('Pie Chart Class Distribution')
 
     plt.tight_layout()
+    plt.show()
+
+def show_corr(df,save_path:str=None):
+    plt.figure(figsize=(15, 12))
+    sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+
+    plt.title('Correlation Matrix')
+    plt.tight_layout()
+    if save_path:
+        plt.savefig(save_path, dpi=300)
     plt.show()
