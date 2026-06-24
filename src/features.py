@@ -40,6 +40,8 @@ def add_redshift_interaction(df: pd.DataFrame):
     df["redshift_inter_gr"] = (
         df["redshift"] * df["color_gr"]
     )
+
+    df['redshift_x_z'] = df['redshift'] * df['z']
     return df
 
 
@@ -53,7 +55,8 @@ def add_color_ratios(df: pd.DataFrame):
     if missing:
         raise ValueError(f'{missing} Not Found! Please Make sure that you added all the 7 colour indices from add_color_indices function!')
     
-    df['ug_gr_ratio'] = df['color_ug'] / (df['color_gr'] + 1e-6)
+    # df['ug_gr_ratio'] = df['color_ug'] / (df['color_gr'] + 1e-6)
+    df['gr_ri_ratio'] = df['color_gr'] / (df['color_ri'] + 1e-6)
 
     return df
 
@@ -78,7 +81,6 @@ def add_brightness_stat(df:pd.DataFrame):
     filters = ["u", "g", "r", "i", "z"]
 
     df["mag_mean"] = df[filters].mean(axis=1)
-    df["mag_std"] = df[filters].std(axis=1)
     df["mag_max"] = df[filters].max(axis=1)
     df["mag_min"] = df[filters].min(axis=1)
     df['mag_range'] = df["mag_max"] - df["mag_min"]
