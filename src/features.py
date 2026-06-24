@@ -86,7 +86,15 @@ def add_brightness_stat(df:pd.DataFrame):
     return df
 
 
+def add_alpha_cyclic(df: pd.DataFrame):
+    df = df.copy()
 
+    radians = np.radians(df["alpha"])
+
+    df["alpha_sin"] = np.sin(radians)
+    df["alpha_cos"] = np.cos(radians)
+
+    return df
 
 
 def add_stellar_locus_distance(df: pd.DataFrame) -> pd.DataFrame:
@@ -111,5 +119,26 @@ def add_stellar_locus_distance(df: pd.DataFrame) -> pd.DataFrame:
 
 
 
+def build_features(df: pd.DataFrame) -> pd.DataFrame:
+    """Run the full report-aligned feature-engineering pipeline in order."""
+    
+    # Base astronomy features
+    df = add_color_indices(df)
+    df = add_redshift_transform(df)
 
+    # Physics-driven interactions
+    df = add_redshift_interaction(df)
+    df = add_stellar_locus_distance(df)
+
+    # Experimental color features
+    df = add_color_ratios(df)
+    df = add_qso_color_region(df)
+
+    # Statistical features
+    df = add_brightness_stat(df)
+
+    # Positional features
+    df = add_alpha_cyclic(df)
+
+    return df
 
