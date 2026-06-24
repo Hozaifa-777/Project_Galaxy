@@ -25,6 +25,24 @@ def add_redshift_transform(df: pd.DataFrame):
     return df
 
 
+def add_redshift_interaction(df: pd.DataFrame):
+    df = df.copy()
+    required_cols = ["color_ug", "color_gr"]
+
+    missing = [c for c in required_cols if c not in df.columns]
+
+    if missing:
+        raise ValueError(f'{missing} Not Found! Please Make sure that you added all the 7 colour indices from add_color_indices function!')
+    
+    df["redshift_inter_ug"] = (
+        df["redshift"] * df["color_ug"]
+    )
+    df["redshift_inter_gr"] = (
+        df["redshift"] * df["color_gr"]
+    )
+    return df
+
+
 
 
 
