@@ -57,6 +57,21 @@ def add_color_ratios(df: pd.DataFrame):
 
     return df
 
+def add_qso_color_region(df: pd.DataFrame):
+    df = df.copy()
+
+    required_cols = ["color_ug", "color_gr"]
+
+    missing = [c for c in required_cols if c not in df.columns]
+
+    if missing:
+        raise ValueError(f'{missing} Not Found! Please Make sure that you added all the 7 colour indices from add_color_indices function!')
+
+    df['quasar_color_region'] = ((df['color_ug'] < 0.6) & (df['color_gr'] > -0.15) & (df['color_gr'] < 0.7)).astype(int)
+
+    return df
+
+
 
 
 
