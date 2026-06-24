@@ -72,6 +72,20 @@ def add_qso_color_region(df: pd.DataFrame):
     return df
 
 
+def add_brightness_stat(df:pd.DataFrame):
+    df = df.copy()
+
+    filters = ["u", "g", "r", "i", "z"]
+
+    df["mag_mean"] = df[filters].mean(axis=1)
+    df["mag_std"] = df[filters].std(axis=1)
+    df["mag_max"] = df[filters].max(axis=1)
+    df["mag_min"] = df[filters].min(axis=1)
+    df['mag_range'] = df["mag_max"] - df["mag_min"]
+
+    return df
+
+
 
 
 
