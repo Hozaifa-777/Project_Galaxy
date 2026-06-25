@@ -5,6 +5,7 @@ import optuna
 import numpy as np
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score
+from sklearn.utils.class_weight import compute_sample_weight
 
 
 def auto_tune(X,y,model_class, tuning_params:dict = None, cv=None , n_trials=50):
@@ -53,7 +54,7 @@ def auto_tune(X,y,model_class, tuning_params:dict = None, cv=None , n_trials=50)
     return study
     
 
-def train_pipline(X,y,model_class, model_params:dict = None, cv=None):
+def train_pipline(X,y,model_class, model_params:dict = None, cv=None,use_class_weight=False):
 
         
     if model_params is None:
@@ -99,7 +100,11 @@ def train_pipline(X,y,model_class, model_params:dict = None, cv=None):
         y_train = y.iloc[train_idx]
         y_valid = y.iloc[valid_idx]
 
-        model.fit(X_train, y_train)
+        if use_class_weight:
+            sample_weights = compute_sample_weight('balanced', y_train)
+            model.fit(X_train, y_train, sample_weight=sample_weights)
+        else:
+            model.fit(X_train, y_train)
 
         preds = model.predict(X_valid).flatten()
 
