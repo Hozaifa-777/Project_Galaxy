@@ -115,4 +115,4 @@ def train_pipline(X,y,model_class, model_params:dict = None, cv=None):
     print(f"Mean CV Accuracy: {ma:.5f}\n")
     print('='*50)
 
-    return model
+    return model ,oof_preds
