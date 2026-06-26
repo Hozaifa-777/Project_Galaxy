@@ -19,15 +19,18 @@ def auto_tune(X,y,model_class, tuning_params:dict = None, cv=None , n_trials=50)
     params = {}
     def objective(trial):
         for param_name, config in tuning_params.items():
-            if config[0] == 'int':
-                params[param_name] = trial.suggest_int(param_name,config[1],config[2])
+            try:
+                if config[0] == 'int':
+                    params[param_name] = trial.suggest_int(param_name,config[1],config[2])
 
-            elif config[0] == 'float':
+                elif config[0] == 'float':
+                    
+                    params[param_name] = trial.suggest_float(param_name,config[1],config[2],log=config[3])
                 
-                params[param_name] = trial.suggest_float(param_name,config[1],config[2],log=config[3])
-            
-            else:
-                params[param_name] = config
+                else:
+                    params[param_name] = config
+            except:
+                    params[param_name] = config
 
         model = model_class(**params)
 
