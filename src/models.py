@@ -94,7 +94,7 @@ def train_pipline(X,y,model_class, model_params:dict = None, cv=None,use_class_w
 
     n_classes = len(np.unique(y))
     oof_probas = np.zeros((len(y), n_classes))
-    oof_preds = np.zeros((len(y),n_classes), dtype=int)
+    oof_preds = np.zeros(len(y), dtype=int)
 
     all_score = []
 
