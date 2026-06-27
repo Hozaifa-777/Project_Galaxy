@@ -89,9 +89,9 @@ def add_stellar_locus_distance(df: pd.DataFrame) -> pd.DataFrame:
     if "color_ri" not in df.columns or "color_gr" not in df.columns:
         df = add_color_indices(df)
 
-    df['stellar_locus_dist'] = np.sqrt((df['g_r'] - 0.52)**2 + (df['r_i'] - 0.25)**2)
+    df['stellar_locus_dist'] = np.sqrt((df['color_gr'] - 0.52)**2 + (df['color_ri'] - 0.25)**2)
 
-    df['qso_locus_dist'] = np.sqrt((df['g_r'] - 0.24)**2 + (df['r_i'] - 0.15)**2)
+    df['qso_locus_dist'] = np.sqrt((df['color_gr'] - 0.24)**2 + (df['color_ri'] - 0.15)**2)
 
     return df
 
