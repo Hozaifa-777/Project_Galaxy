@@ -6,6 +6,7 @@ import numpy as np
 from sklearn.metrics import balanced_accuracy_score
 from sklearn.model_selection import cross_val_score
 from sklearn.utils.class_weight import compute_sample_weight
+from sklearn.linear_model import LogisticRegression
 
 
 def auto_tune(X,y,model_class, tuning_params:dict = None, cv=None , n_trials=50):
@@ -128,3 +129,25 @@ def train_pipline(X,y,model_class, model_params:dict = None, cv=None,use_class_w
     print('='*50)
 
     return model ,oof_preds, oof_probas
+
+def stacking_ensemble(oof_probas_list, y, 
+                      test_probas_list, 
+                      meta_model=None):
+
+    # shape: (n_samples, n_models * n_classes)
+    meta_train = np.hstack(oof_probas_list)
+    meta_test  = np.hstack(test_probas_list)
+
+    if meta_model is None:
+        meta_model = LogisticRegression(
+            max_iter=1000,
+            C=1.0,
+            random_state=42
+        )
+
+    meta_model.fit(meta_train, y)
+    
+    final_preds  = meta_model.predict(meta_test)
+    final_probas = meta_model.predict_proba(meta_test)
+    
+    return final_preds, final_probas, meta_model
