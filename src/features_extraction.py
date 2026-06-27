@@ -88,11 +88,20 @@ def add_stellar_locus_distance(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     if "color_ri" not in df.columns or "color_gr" not in df.columns:
         df = add_color_indices(df)
-        
+
     df['stellar_locus_dist'] = np.sqrt((df['g_r'] - 0.52)**2 + (df['r_i'] - 0.25)**2)
 
     df['qso_locus_dist'] = np.sqrt((df['g_r'] - 0.24)**2 + (df['r_i'] - 0.15)**2)
 
+    return df
+
+def add_spectral_type_formula(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+    df['spectral_type'] = pd.cut(
+        df['r'] - df['g'],
+        [-np.inf, -1, -0.5, 0, np.inf],
+        labels=['M', 'G/K', 'A/F', 'O/B']
+    ).astype(str)
     return df
 
 
