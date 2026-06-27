@@ -1,5 +1,5 @@
 import pandas as pd
-from features_extraction import add_spectral_type_formula,add_galaxy_population_formula,build_features
+from src.features_extraction import add_spectral_type_formula,add_galaxy_population_formula,build_features
 
 def load_data(df_path,include_class=True,is_org_dataset=False):
     df = pd.read_csv(df_path)
