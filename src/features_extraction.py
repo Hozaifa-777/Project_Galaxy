@@ -139,6 +139,16 @@ def add_redshift_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def add_sky_coords_3d(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+    alpha_rad = np.radians(df['alpha'])
+    delta_rad = np.radians(df['delta'])
+    df['sky_x'] = np.cos(delta_rad) * np.cos(alpha_rad)
+    df['sky_y'] = np.cos(delta_rad) * np.sin(alpha_rad)
+    df['sky_z'] = np.sin(delta_rad)
+    return df
+
+
 def build_features(df: pd.DataFrame) -> pd.DataFrame:
     """Run the full report-aligned feature-engineering pipeline in order."""
     
