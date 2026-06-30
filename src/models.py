@@ -150,7 +150,7 @@ def train_pipline(X,y,model_class, model_params:dict = None, cv=None, X_test=Non
 
         return model ,oof_preds, oof_probas
     
-    if X_test:
+    if X_test is not None:
         model.fit(X,y)
         test_proba = model.predict_proba(X_test)
         return test_proba
