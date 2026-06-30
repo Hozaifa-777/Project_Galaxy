@@ -62,7 +62,7 @@ def auto_tune(X,y,model_class, tuning_params:dict = None, cv=None , n_trials=50)
     return study
     
 
-def train_pipline(X,y,model_class, model_params:dict = None, cv=None,use_class_weight=False):
+def train_pipline(X,y,model_class, model_params:dict = None, cv=None, X_test=None):
 
         
     if model_params is None:
@@ -117,38 +117,46 @@ def train_pipline(X,y,model_class, model_params:dict = None, cv=None,use_class_w
     oof_preds = np.zeros(len(y), dtype=int)
 
     all_score = []
+    if cv:
+        print(f'Cross Validating with {name} Model Now...')
+        for fold, (train_idx, valid_idx) in enumerate(cv.split(X, y), start=1):
 
-    print(f'Cross Validating with {name} Model Now...')
-    for fold, (train_idx, valid_idx) in enumerate(cv.split(X, y), start=1):
+            X_train = X.iloc[train_idx]
+            X_valid = X.iloc[valid_idx]
 
-        X_train = X.iloc[train_idx]
-        X_valid = X.iloc[valid_idx]
+            y_train = y.iloc[train_idx]
+            y_valid = y.iloc[valid_idx]
 
-        y_train = y.iloc[train_idx]
-        y_valid = y.iloc[valid_idx]
+            if name in ['RealMLP_TD_Classifier','TabM_D_Classifier']:
+                # X_val, y_val For Early stopping
+                model.fit(X_train, y_train, X_val=X_valid, y_val=y_valid)
+            else:
+                model.fit(X_train, y_train)
 
-        if use_class_weight:
-            sample_weights = compute_sample_weight('balanced', y_train)
-            model.fit(X_train, y_train, sample_weight=sample_weights)
-        else:
-            model.fit(X_train, y_train)
+            preds = model.predict(X_valid).flatten()
+            oof_probas[valid_idx] = model.predict_proba(X_valid)
 
-        preds = model.predict(X_valid).flatten()
-        oof_probas[valid_idx] = model.predict_proba(X_valid)
+            oof_preds[valid_idx] = preds
 
-        oof_preds[valid_idx] = preds
+            score = balanced_accuracy_score(y_valid, preds)
 
-        score = balanced_accuracy_score(y_valid, preds)
+            all_score.append(score)
 
-        all_score.append(score)
+            print(f"Fold {fold}: {score:.5f}")
+        
+        ma = sum(all_score) / len(all_score)
+        print(f"Mean CV Accuracy: {ma:.5f}\n")
+        print('='*50)
 
-        print(f"Fold {fold}: {score:.5f}")
+        return model ,oof_preds, oof_probas
     
-    ma = sum(all_score) / len(all_score)
-    print(f"Mean CV Accuracy: {ma:.5f}\n")
-    print('='*50)
+    if X_test:
+        model.fit(X,y)
+        test_proba = model.predict_proba(X_test)
+        return test_proba
 
-    return model ,oof_preds, oof_probas
+    else:
+        raise Exception('Please Check if you need Cross Validation or Predict the test set. all of them are None Value')
 
 def stacking_ensemble(oof_probas_list, y, 
                       test_probas_list, 
